@@ -1,7 +1,6 @@
-export default function Home() {
-  return (
-    <main>
-      <div>Hello world!</div>
-    </main>
-  );
+import { redirect } from "next/navigation";
+import { getCurrentSession } from "@/lib/auth";
+
+export default async function Home() {
+  redirect((await getCurrentSession()) ? "/dashboard" : "/login");
 }

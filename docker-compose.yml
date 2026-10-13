@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pillbills
+      POSTGRES_PASSWORD: pillbills
+      POSTGRES_DB: pillbills
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pillbills-postgres:/var/lib/postgresql/data
+
+volumes:
+  pillbills-postgres:

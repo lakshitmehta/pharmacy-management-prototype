@@ -1,34 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PillBills Independent Pharmacy POS
 
-## Getting Started
+An independent TypeScript pharmacy/POS application based on the verified PillBills audit. It has its own PostgreSQL database, authentication, domain services, audit records, and synthetic demo data.
 
-First, run the development server:
+## Local setup
 
-```bash
+Requirements: Node.js 24+, npm, and Docker Desktop.
+
+```powershell
+Copy-Item .env.example .env
+docker compose up -d postgres
+npm install
+npm run db:generate
+npm run db:migrate -- --name foundation
+npm run db:seed
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` after starting the development server.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Synthetic seed login: `admin` / `ChangeMe!123`. Change this password before using the application outside local development.
 
-## Learn More
+## Commands
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev`: start the development server.
+- `npm run build`: create a production build.
+- `npm run lint`: run ESLint.
+- `npm test`: run unit tests.
+- `npm run db:migrate`: create/apply a local Prisma migration.
+- `npm run db:seed`: load synthetic pharmacy data.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Data integrity
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Inventory changes are append-only movement records. Customer receipts and supplier payments are allocated FIFO. Posted records are not deleted; future correction workflows use reversal records. Business mutations will execute inside PostgreSQL transactions.
 
-## Deploy on Vercel
+## Configuration and deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Copy `.env.example` to an environment-specific `.env`. Never commit secrets. Production deployment requires PostgreSQL, secure HTTPS cookies, a strong database password, and scheduled backups. Backup/restore workflows will be implemented in the operations milestone.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Implementation status
+
+See [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) for the milestone checklist, verified checks, pending infrastructure items, and explicit decisions for audited unknown behavior.
